@@ -6,7 +6,6 @@ from django.test import TestCase
 from django.core import serializers
 from django.utils.encoding import smart_text
 from markupfield.fields import MarkupField, Markup
-from markupfield.widgets import MarkupTextarea, AdminMarkupTextareaWidget
 from markupfield.tests.models import Post, Article, Concrete
 
 from django.forms.models import modelform_factory
@@ -114,11 +113,6 @@ class MarkupFieldTestCase(TestCase):
 
 
 class MarkupWidgetTests(TestCase):
-
-    def test_markuptextarea_used(self):
-        self.assert_(isinstance(MarkupField().formfield().widget, MarkupTextarea))
-        self.assert_(isinstance(ArticleForm()['normal_field'].field.widget, MarkupTextarea))
-
     def test_markuptextarea_render(self):
         a = Article(normal_field='**normal**', normal_field_markup_type='markdown',
                     default_field='**default**', markdown_field='**markdown**',
@@ -143,10 +137,3 @@ class MarkupWidgetTests(TestCase):
     def test_default_markup_type(self):
         self.assert_(ArticleForm().fields['normal_field_markup_type'].initial is None)
         self.assertEqual(ArticleForm().fields['default_field_markup_type'].initial, 'markdown')
-
-    def test_model_admin_field(self):
-        # borrows from regressiontests/admin_widgets/tests.py
-        from django.contrib import admin
-        ma = admin.ModelAdmin(Post, admin.site)
-        self.assert_(isinstance(ma.formfield_for_dbfield(Post._meta.get_field('body')).widget,
-                                AdminMarkupTextareaWidget))

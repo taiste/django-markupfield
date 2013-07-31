@@ -56,9 +56,6 @@ class Markup(object):
 
     rendered = property(_get_rendered)
 
-    def __repr__(self):
-        return self.raw.encode('utf-8')
-
     # allows display via templates to work without safe filter
     def __unicode__(self):
         return mark_safe(smart_unicode(self.rendered))

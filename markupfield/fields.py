@@ -1,3 +1,4 @@
+import re
 import django
 from django.conf import settings
 from django.db import models
@@ -58,7 +59,13 @@ class Markup(object):
 
     # allows display via templates to work without safe filter
     def __unicode__(self):
-        return mark_safe(smart_unicode(self.rendered))
+        # self.rendered contains all \n\n sequences converted to <p>'s and
+        # \r\n sequences to a single \n, but single \n's may remain. Just
+        # substitute them with <br>'s because non-technical people don't grok
+        # "the two empty spaces before EOL" thing and even if they did, you
+        # couldn't see them in text fields.
+        content = re.sub(r'\n', '<br>', smart_unicode(self.rendered))
+        return mark_safe(content)
 
 
 class MarkupDescriptor(object):

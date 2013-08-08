@@ -64,7 +64,7 @@ class Markup(object):
         # substitute them with <br>'s because non-technical people don't grok
         # "the two empty spaces before EOL" thing and even if they did, you
         # couldn't see them in text fields.
-        content = re.sub(r'\n', '<br>', smart_unicode(self.rendered))
+        content = re.sub(r'(?<!\</p\>)\n(?!\<p\>)', '<br>', smart_unicode(self.rendered))
         return mark_safe(content)
 
 
